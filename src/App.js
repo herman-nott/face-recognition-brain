@@ -5,11 +5,15 @@ import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import Rank from "./components/Rank/Rank";
 import ParticleBackground from "./components/ParticleBackground/ParticleBackground";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
+import Signin from "./components/Signin/Signin";
+import Register from "./components/Register/Register";
 import { useState } from "react";
 
 function App() {
   const [input, setInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [route, setRoute] = useState('signin');
+  const [isSignedIn, setIsSignedIn] = useState(false);
   
   const PAT = '8789603313e74fc3b516d12617ae12fe';
   const USER_ID = 'herman';
@@ -42,7 +46,6 @@ function App() {
     };
 
   function onInputChange(event) {
-    // console.log(event.target.value);
     setInput(event.target.value);
   }
 
@@ -60,14 +63,34 @@ function App() {
       .catch(error => console.error('Error:', error));
   }
 
+  function onRouteChange(route) {
+    if (route === 'signout') {
+      setIsSignedIn(false);
+    } else if (route === 'home') {
+      setIsSignedIn(true);
+    }
+
+    setRoute(route);
+  }
+
   return (
     <div className="App">
       <ParticleBackground />
-      <Navigation />
-      <Logo />
-      <Rank />
-      <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
-      <FaceRecognition imageUrl={imageUrl} />
+      <Navigation onRouteChange={onRouteChange} isSignedIn={isSignedIn} />
+      {
+        route === 'home'
+          ? <div>
+              <Logo />
+              <Rank />
+              <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
+              <FaceRecognition imageUrl={imageUrl} />
+            </div>
+          : (
+              route === 'register'
+                ? <Register onRouteChange={onRouteChange} />
+                : <Signin onRouteChange={onRouteChange} />
+            )
+      }
     </div>
   );
 }

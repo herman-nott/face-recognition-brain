@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, memo } from "react";
 import { Particles, initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
@@ -34,7 +34,7 @@ function ParticleBackground() {
             },
             move: {
                 enable: true,
-                speed: 2,
+                speed: 1.5,
             },
             opacity: {
                 value: 0.5,
@@ -91,4 +91,4 @@ function ParticleBackground() {
     );
 }
 
-export default ParticleBackground;
+export default memo(ParticleBackground);
