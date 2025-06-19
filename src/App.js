@@ -30,19 +30,6 @@ function App() {
   }
 
   function calculateFaceLocation(data) {
-    // const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-
-    // const imageElement = document.getElementById('inputImage');
-    // const width = Number(imageElement.width);
-    // const height = Number(imageElement.height);
-
-    // return {
-    //   leftCol: clarifaiFace.left_col * width,
-    //   topRow: clarifaiFace.top_row * height,
-    //   rightCol: width - (clarifaiFace.right_col * width),
-    //   bottomRow: height - (clarifaiFace.bottom_row * height) + 20
-    // };
-
     const regions = data.outputs[0].data.regions;
 
     const imageElement = document.getElementById('inputImage');
