@@ -70,8 +70,6 @@ function App() {
     setRoute(route);
   }
 
-  
-
   return (
     <div className="App">
       <ParticleBackground />
