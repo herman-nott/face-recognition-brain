@@ -1,6 +1,7 @@
 import { useState, useEffect  } from 'react';
+import './FaceRecognition.css';
 
-function FaceRecognition({ imageUrl }) {
+function FaceRecognition({ imageUrl, boxes }) {
     const [error, setError] = useState(false);
 
     useEffect(() => {
@@ -17,13 +18,31 @@ function FaceRecognition({ imageUrl }) {
         <div className="center ma">
             <div className="absolute mt2 pb1">
                 {imageUrl && !error && (
-                    <img
-                        src={imageUrl}
-                        alt="Detected"
-                        width="500px"
-                        height="auto"
-                        onError={handleError}
-                    />
+                    <div>
+                        <img
+                            src={imageUrl}
+                            alt="Detected"
+                            width="500px"
+                            height="auto"
+                            onError={handleError}
+                            id = "inputImage"
+                        />
+                        {/* <div className="bounding-box" style={{ top: box.topRow, right: box.rightCol, bottom: box.bottomRow, left: box.leftCol }}></div> */}
+                        {Array.isArray(boxes) && boxes.map((box, i) => {
+                            return (
+                                <div
+                                    key={i}
+                                    className="bounding-box"
+                                    style={{
+                                        top: box.topRow,
+                                        left: box.leftCol,
+                                        right: box.rightCol,
+                                        bottom: box.bottomRow
+                                    }}
+                                ></div>
+                            );
+                        })}
+                    </div>
                 )}
                 {error && (
                     <p style={{ color: 'red', fontWeight: 'bold' }}>

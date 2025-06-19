@@ -14,52 +14,62 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [route, setRoute] = useState('signin');
   const [isSignedIn, setIsSignedIn] = useState(false);
+  // const [box, setBox] = useState({});
+  const [boxes, setBoxes] = useState([]);
   
-  const PAT = '8789603313e74fc3b516d12617ae12fe';
-  const USER_ID = 'herman';
-  const APP_ID = 'face-recognition-brain';
-  const MODEL_ID = 'face-detection';
-  
-    const raw = JSON.stringify({
-      "user_app_id": {
-        "user_id": USER_ID,
-        "app_id": APP_ID
-      },
-      "inputs": [
-        {
-          "data": {
-            "image": {
-              "url": input
-            }
-          }
-        }
-      ]
-    });
-  
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Key ' + PAT
-      },
-      body: raw
-    };
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ imageUrl: input })
+  };
 
   function onInputChange(event) {
     setInput(event.target.value);
   }
 
+  function calculateFaceLocation(data) {
+    // const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+
+    // const imageElement = document.getElementById('inputImage');
+    // const width = Number(imageElement.width);
+    // const height = Number(imageElement.height);
+
+    // return {
+    //   leftCol: clarifaiFace.left_col * width,
+    //   topRow: clarifaiFace.top_row * height,
+    //   rightCol: width - (clarifaiFace.right_col * width),
+    //   bottomRow: height - (clarifaiFace.bottom_row * height) + 20
+    // };
+
+    const regions = data.outputs[0].data.regions;
+
+    const imageElement = document.getElementById('inputImage');
+    const width = Number(imageElement.width);
+    const height = Number(imageElement.height);
+
+    return regions.map(region => {
+      const boundingBox = region.region_info.bounding_box;
+      return {
+        leftCol: boundingBox.left_col * width,
+        topRow: boundingBox.top_row * height,
+        rightCol: width - (boundingBox.right_col * width),
+        bottomRow: height - (boundingBox.bottom_row * height) + 10
+      };
+    });
+  }
+
+  function displayFaceBox(boxes) {    
+    setBoxes(boxes);
+  }
+
   function onButtonSubmit() {
     setImageUrl(input);
 
-    // console.log('click');
-    // console.log('URL:', input);
-
-    fetch(`https://api.clarifai.com/v2/models/${MODEL_ID}/outputs`, requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-      })
+    fetch(`http://localhost:3000/clarifai`, requestOptions)
+      .then(response => response.json(response))
+      .then(data => displayFaceBox(calculateFaceLocation(data)))
       .catch(error => console.error('Error:', error));
   }
 
@@ -73,6 +83,8 @@ function App() {
     setRoute(route);
   }
 
+  
+
   return (
     <div className="App">
       <ParticleBackground />
@@ -83,7 +95,7 @@ function App() {
               <Logo />
               <Rank />
               <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
-              <FaceRecognition imageUrl={imageUrl} />
+              <FaceRecognition imageUrl={imageUrl} boxes={boxes} />
             </div>
           : (
               route === 'register'
