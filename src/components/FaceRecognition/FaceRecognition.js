@@ -1,18 +1,20 @@
 import { useState, useEffect  } from 'react';
 import './FaceRecognition.css';
 
-function FaceRecognition({ imageUrl, boxes }) {
+function FaceRecognition({ imageUrl, boxes, inputError }) {
     const [error, setError] = useState(false);
 
     useEffect(() => {
         if (imageUrl) {
-        setError(false);
+            setError(false);
         }
     }, [imageUrl]);
 
-    const handleError = () => {
-        setError(true);
-    };
+    function handleError() {
+        setError(true)
+    }
+
+    const showError = error || inputError;
     
     return (
         <div className="center ma">
@@ -44,7 +46,7 @@ function FaceRecognition({ imageUrl, boxes }) {
                         })}
                     </div>
                 )}
-                {error && (
+                {showError && (
                     <p style={{ color: 'red', fontWeight: 'bold' }}>
                         &#10006; Error loading image. Make sure the link is correct.
                     </p>

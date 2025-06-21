@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-function Signin({ onRouteChange }) {
+function Signin({ onRouteChange, loadUser }) {
     const [signInEmailorUsername, setSignInEmailorUsername] = useState('');
     const [signInPassword, setSignInPassword] = useState('');
+    const [error, setError] = useState(false);
 
     function onEmailOrUsernameChange(event) {
         setSignInEmailorUsername(event.target.value);
@@ -22,12 +23,16 @@ function Signin({ onRouteChange }) {
             })
         })
             .then(response => response.json())
-            .then(data => {
-                if (data === 'success') {
+            .then(user => {
+                if (user && user.id) {                    
+                    setError('');
+                    loadUser(user);
                     onRouteChange('home');
+                } else {
+                    setError('Incorrect username or password');
                 }
-            });
-        
+            })
+            .catch(() => setError('Server error. Please try again later.'));;
     }
 
     return (
@@ -55,6 +60,11 @@ function Signin({ onRouteChange }) {
                     </div>
                 </main>
             </article>
+            {error && (
+            <p style={{ color: 'red', fontWeight: 'bold' }}>
+                &#10006; {error}
+            </p>
+            )}
         </div>
     );
 }

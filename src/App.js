@@ -14,8 +14,15 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
   const [route, setRoute] = useState('signin');
   const [isSignedIn, setIsSignedIn] = useState(false);
-  // const [box, setBox] = useState({});
   const [boxes, setBoxes] = useState([]);
+  const [user, setUser] = useState({
+    id: '',
+    username: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  });
+  const [inputError, setInputError] = useState(false);
   
   const requestOptions = {
     method: 'POST',
@@ -51,23 +58,75 @@ function App() {
     setBoxes(boxes);
   }
 
+  function isValidImageUrl(url) {
+    return /^https?:\/\/.+/i.test(url);
+  }
+
   function onButtonSubmit() {
+    if (!input || !isValidImageUrl(input)) {
+      setInputError(true);
+      setImageUrl('');
+      setBoxes([]);
+      return;
+    }
+
+    setInputError(false)
     setImageUrl(input);
 
     fetch(`http://localhost:3000/clarifai`, requestOptions)
       .then(response => response.json(response))
-      .then(data => displayFaceBox(calculateFaceLocation(data)))
+      .then(data => {
+        if (data) {
+          const regions = data?.outputs?.[0]?.data?.regions;
+          
+          if (regions && regions.length > 0) {
+              fetch('http://localhost:3000/image', {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: user.id })
+              })
+                .then(response => response.json())
+                .then(count => setUser(prevUser => ({
+                  ...prevUser,
+                  entries: count
+                })));
+            }
+            displayFaceBox(calculateFaceLocation(data));
+          }
+      })
       .catch(error => console.error('Error:', error));
   }
 
   function onRouteChange(route) {
     if (route === 'signout') {
       setIsSignedIn(false);
+      setInput('');
+      setImageUrl('');
+      setBoxes([]);
+      setUser({
+        id: '',
+        username: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      });
     } else if (route === 'home') {
       setIsSignedIn(true);
     }
 
     setRoute(route);
+  }
+
+  function loadUser(userData) {
+    setUser({
+      id: userData.id,
+      username: userData.username,
+      email: userData.email,
+      entries: userData.entries,
+      joined: userData.joined
+    });
   }
 
   return (
@@ -78,14 +137,14 @@ function App() {
         route === 'home'
           ? <div>
               <Logo />
-              <Rank />
+              <Rank username={user.username} entries={user.entries} />
               <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
-              <FaceRecognition imageUrl={imageUrl} boxes={boxes} />
+              <FaceRecognition imageUrl={imageUrl} boxes={boxes} inputError={inputError} />
             </div>
           : (
               route === 'register'
-                ? <Register onRouteChange={onRouteChange} />
-                : <Signin onRouteChange={onRouteChange} />
+                ? <Register onRouteChange={onRouteChange} loadUser={loadUser} />
+                : <Signin onRouteChange={onRouteChange} loadUser={loadUser} />
             )
       }
     </div>
