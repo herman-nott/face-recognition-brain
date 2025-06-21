@@ -11,7 +11,7 @@ function FaceRecognition({ imageUrl, boxes, inputError }) {
     }, [imageUrl]);
 
     function handleError() {
-        setError(true)
+        setError(true);
     }
 
     const showError = error || inputError;
