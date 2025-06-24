@@ -24,7 +24,7 @@ function App() {
   });
   const [inputError, setInputError] = useState(false);
   
-  const requestOptions = {
+  const requestOptionsClarifai = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ function App() {
     setInputError(false)
     setImageUrl(input);
 
-    fetch(`http://localhost:3000/clarifai`, requestOptions)
+    fetch(`http://localhost:3000/clarifai`, requestOptionsClarifai)
       .then(response => response.json(response))
       .then(data => {
         if (data) {

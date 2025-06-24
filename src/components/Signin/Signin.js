@@ -44,7 +44,7 @@ function Signin({ onRouteChange, loadUser }) {
                             <legend className="f1 fw6 ph0 mh0">Sign In</legend>
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email or Username</label>
-                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="login" id="login"  onChange={onEmailOrUsernameChange} />
+                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="login" id="login" onChange={onEmailOrUsernameChange} />
                             </div>
                             <div className="mv3">
                                 <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
