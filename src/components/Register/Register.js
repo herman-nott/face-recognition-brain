@@ -4,6 +4,7 @@ function Register({ onRouteChange, loadUser }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(false);
 
     function onUsernameChange(event) {
         setUsername(event.target.value);
@@ -29,9 +30,11 @@ function Register({ onRouteChange, loadUser }) {
         })
             .then(response => response.json())
             .then(user => {
-                if (user) {
+                if (user.id) {
                     loadUser(user);
                     onRouteChange('home');
+                } else {
+                    setError('Incorrect entered data.');
                 }
             }); 
     }
@@ -62,6 +65,11 @@ function Register({ onRouteChange, loadUser }) {
                     </div>
                 </main>
             </article>
+            {error && (
+                <p style={{ color: 'red', fontWeight: 'bold' }}>
+                    &#10006; {error}
+                </p>
+            )}
         </div>
     );
 }

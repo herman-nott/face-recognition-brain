@@ -91,7 +91,8 @@ function App() {
                 .then(count => setUser(prevUser => ({
                   ...prevUser,
                   entries: count
-                })));
+                })))
+                .catch(console.log);
             }
             displayFaceBox(calculateFaceLocation(data));
           }

@@ -24,7 +24,7 @@ function Signin({ onRouteChange, loadUser }) {
         })
             .then(response => response.json())
             .then(user => {
-                if (user && user.id) {                    
+                if (user.id) {                    
                     setError('');
                     loadUser(user);
                     onRouteChange('home');
@@ -61,9 +61,9 @@ function Signin({ onRouteChange, loadUser }) {
                 </main>
             </article>
             {error && (
-            <p style={{ color: 'red', fontWeight: 'bold' }}>
-                &#10006; {error}
-            </p>
+                <p style={{ color: 'red', fontWeight: 'bold' }}>
+                    &#10006; {error}
+                </p>
             )}
         </div>
     );
