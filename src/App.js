@@ -73,14 +73,14 @@ function App() {
     setInputError(false)
     setImageUrl(input);
 
-    fetch(`http://localhost:3000/clarifai`, requestOptionsClarifai)
+    fetch(`${process.env.REACT_APP_API_URL}/clarifai`, requestOptionsClarifai)
       .then(response => response.json(response))
       .then(data => {
         if (data) {
           const regions = data?.outputs?.[0]?.data?.regions;
           
           if (regions && regions.length > 0) {
-              fetch('http://localhost:3000/image', {
+              fetch(`${process.env.REACT_APP_API_URL}/image`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json'
